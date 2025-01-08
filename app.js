@@ -10,7 +10,7 @@ const {blog} = require('./models/blog')
 
 
 const app = express()
-const Port = process.env.PORT
+const Port = process.env.PORT || 3000
 
 app.use(express.urlencoded({extended:false}))
 app.use(cookieParser())
