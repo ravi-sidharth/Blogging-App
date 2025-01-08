@@ -4,7 +4,7 @@
   "main": "app.js",
   "scripts": {
     "build":"npm install",
-    "start": "node app",
+    "start": "node app"
     
   },
   "keywords": [],
