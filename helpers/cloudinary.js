@@ -1,16 +1,19 @@
 const cloudinary = require('../config/cloudinary')
+const streamifier = require('streamifier');
 
-const uploadToCloudinary =async(filePath)=> {
-    try {
-        const result = await cloudinary.uploader.upload(filePath)
-        return {
-            url: result.secure_url,
-            publicId:result.public_id
-        }
-    } catch(error) {
-        console.error("while uploading to cloudinary",error)
-        throw new Error ('Error while uploading to cloudinary')
-    }
-}
+const uploadToCloudinary = (buffer) => {
+    return new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream((error, result) => {
+            if (error) {
+                return reject(error);
+            }
+            resolve({
+                url: result.secure_url,
+                publicId: result.public_id
+            });
+        });
+        streamifier.createReadStream(buffer).pipe(uploadStream);
+    });
+};
 
-module.exports = uploadToCloudinary
+module.exports = uploadToCloudinary;

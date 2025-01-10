@@ -1,6 +1,6 @@
 const JWT = require('jsonwebtoken')
 
-const secret = "123456tygfbvd"
+const secret =process.env.secret_code
 function createTokenForUser(user) {
     const payload ={
         userName :user.fullName,
@@ -10,7 +10,7 @@ function createTokenForUser(user) {
         role:user.role
     }
     const token = JWT.sign(payload,secret)
-
+    
     return token
 }
 

@@ -12,17 +12,16 @@ const uploadImage = async(req,res)=> {
                 message:'File is required Please upload your file'
             })
         }
-
-        // upload to cloudinary
-        const {url, publicId} = await uploadToCloudinary(req.file.path)
-
+        
         if (!req.user) {
             return res.status(401).json({
                 success: false,
                 message: 'User not authenticated.',
             });
         }
-        // console.log(req.user,"request")
+
+        // upload to cloudinary
+        const {url, publicId} = await uploadToCloudinary(req.file.buffer)
 
         // store the image url and public id along with the uploaded user id 
         const newlyUploadedImage = await Image.create({
@@ -39,8 +38,8 @@ const uploadImage = async(req,res)=> {
         })
         return res.redirect(`/blog/${blog._id}`)
 
-    } catch(e){
-        console.log(e)
+    } catch(err){
+        console.log(err)
         res.status(500).json({
             success:false,
             message:"Something went wrong Please try again!"

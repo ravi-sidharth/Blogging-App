@@ -6,8 +6,7 @@ const blogRouter= require('./routes/blog')
 const connectionMongoDB = require('./db/db.connect')
 var cookieParser = require('cookie-parser')
 const { checkAuthenticationForUser } = require('./middlewares/authentication')
-const {Blog} = require('./models/blog')
-
+const {getAllBlogs} = require('./controllers/blog')
 
 const app = express()
 const Port = process.env.PORT || 3000
@@ -23,13 +22,7 @@ connectionMongoDB(process.env.MONGO_URL).then(()=>console.log('MongoDB is Connec
 app.set('view engine', 'ejs')
 app.set('views', path.resolve('./views'))
 
-app.get('/',async(req,res)=> {
-   const allBlog = await Blog.find({})
-   return  res.render('home',{
-      user:req.user,
-      blogs:allBlog
-   })
-})
+app.get('/',getAllBlogs)
 app.use('/user',userRouter)
 app.use('/blog',blogRouter)
 
