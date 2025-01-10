@@ -20,12 +20,12 @@ const sendSignUpData = async (req,res)=> {
         email,
         password
     })
-    return res.redirect('/')
+    return res.render('signin')
 }
 
 const sendSignInData = async (req,res)=> {
     const {email, password} = req.body
-
+    
     try {
         const token = await User.matchPasswordAndGenerateToken(email,password) 
         return res.cookie("token",token).redirect('/')
