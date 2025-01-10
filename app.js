@@ -6,7 +6,7 @@ const blogRouter= require('./routes/blog')
 const connectionMongoDB = require('./db/db.connect')
 var cookieParser = require('cookie-parser')
 const { checkAuthenticationForUser } = require('./middlewares/authentication')
-const {blog} = require('./models/blog')
+const {Blog} = require('./models/blog')
 
 
 const app = express()
@@ -24,8 +24,7 @@ app.set('view engine', 'ejs')
 app.set('views', path.resolve('./views'))
 
 app.get('/',async(req,res)=> {
-   // if (!req.user) return res.render('signin')
-   const allBlog = await blog.find({})
+   const allBlog = await Blog.find({})
    return  res.render('home',{
       user:req.user,
       blogs:allBlog

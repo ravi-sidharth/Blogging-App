@@ -3,9 +3,8 @@ const router = Router()
 const {Blog} = require("../models/blog")
 const {Comment} = require('../models/comment')
 const {Image} = require('../models/images')
-const uploadMiddleware = require('../middlewares/upload')
 const uploadImageController = require('../controllers/image')
-
+const uploadmiddleware = require('../middlewares/upload')
 
 router.get('/add-new',(req,res)=> {
     return res.render('addBlog' ,{
@@ -39,25 +38,6 @@ router.post('/comment/:blogId',async (req,res)=> {
 })
 
 
-router.post('/',uploadMiddleware.single('coverImage'),uploadImageController)
-// async(req,res)=> {
-    // const {title,body} = req.body
-    // console.log(req, "request")
-    // console.log(req.file,"alll data")
-    // console.log(req.file.filename,"file name")
-    // const Blog = await blog.create({
-    //     title,
-    //     body,
-    //     coverImageURL:`req.url`,
-    //     createdBy:req.user._id,
-    // })
-    // return res.redirect(`/blog/${Blog._id}`)
-// })
-
-// upload the image 
-
-
-//to get all the images
-
+router.post('/',uploadmiddleware.single('coverImage'),uploadImageController)
 
 module.exports = router
