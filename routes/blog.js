@@ -1,9 +1,11 @@
 const {Router} = require('express')
 const router = Router()
-const multer  = require('multer')
-const path = require('path')
-const {blog} = require("../models/blog")
-const {comment} = require('../models/comment')
+const {Blog} = require("../models/blog")
+const {Comment} = require('../models/comment')
+const {Image} = require('../models/images')
+const uploadMiddleware = require('../middlewares/upload')
+const uploadImageController = require('../controllers/image')
+
 
 router.get('/add-new',(req,res)=> {
     return res.render('addBlog' ,{
@@ -13,51 +15,49 @@ router.get('/add-new',(req,res)=> {
 
 router.get('/:id',async (req,res) => {
     // console.log("req",req.params.id)
-    const Blog = await blog.findById(req.params.id).populate("createdBy")
-    const comments = await comment.find({blogId:req.params.id}).populate("createdBy")
-    console.log("comment",comments)
+    const blog = await Blog.findById(req.params.id).populate("createdBy")
+    const comments = await Comment.find({blogId:req.params.id}).populate("createdBy")
+    const images = await Image.find({}).populate("uploadedBy")
+    console.log("all image",images)
 
     return res.render('blog',{
         user:req.user,
-        blog:Blog,
-        comments
+        blog,
+        comments,
+        images 
     })
 })
 
 router.post('/comment/:blogId',async (req,res)=> {
-    await comment.create({
+    await Comment.create({
         content:req.body.content,
         blogId:req.params.blogId,
         createdBy: req.user._id,
-    })
+    })  
 
     return res.redirect(`/blog/${req.params.blogId}`)
 })
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, path.resolve(`./public/uploads`))
-    },
-    filename: function (req, file, cb) {
-      cb(null, `${Date.now()}-${file.originalname}`)
-    }
-  })
-  
-  const upload = multer({ storage: storage })
+
+router.post('/',uploadMiddleware.single('coverImage'),uploadImageController)
+// async(req,res)=> {
+    // const {title,body} = req.body
+    // console.log(req, "request")
+    // console.log(req.file,"alll data")
+    // console.log(req.file.filename,"file name")
+    // const Blog = await blog.create({
+    //     title,
+    //     body,
+    //     coverImageURL:`req.url`,
+    //     createdBy:req.user._id,
+    // })
+    // return res.redirect(`/blog/${Blog._id}`)
+// })
+
+// upload the image 
 
 
-router.post('/',upload.single('coverImage'),async(req,res)=> {
-    const {title,body} = req.body
-    // if both lower letter and upper letter blog are same that time server through a error because they will not get what you want to do that's why I have taken both differ variable.
-    const Blog = await blog.create({
-        title,
-        body,
-        coverImageURL:`/uploads/${req.file.filename}`,
-        createdBy:req.user._id,
-    })
-    // console.log("blog Id",Blog._id)
-    return res.redirect(`/blog/${Blog._id}`)
-})
+//to get all the images
+
 
 module.exports = router
-// If I export this router on curly braces then I need to require on same name where I will require but if I export thir router without curly braces I will require this file with other name too.
