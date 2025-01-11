@@ -17,6 +17,7 @@ const blogSchema = new Schema({
         ref:"user"
     }
 },
+
 {timestamps:true}
 )
 

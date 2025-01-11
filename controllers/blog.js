@@ -1,6 +1,5 @@
 const {Blog} = require('../models/blog')
 const {Comment}= require('../models/comment')
-const {Image} = require('../models/images')
 
 const getAllBlogs = async(req,res)=> {
     const allBlog = await Blog.find({})
@@ -10,6 +9,13 @@ const getAllBlogs = async(req,res)=> {
     })
  }
 
+ const getuserBlogs = async(req,res)=> {
+   const allBlog = await Blog.find({createdBy:req.params.id}).populate("createdBy")
+   return  res.render('userBlogs',{
+      user:req.user,
+      blogs:allBlog
+   })
+}
 const getAddBlogs = (req,res)=> {
    return res.render('addBlog' ,{
        user:req.user
@@ -42,5 +48,6 @@ const getCommentsByBlogId = async (req,res)=> {
     getAddBlogs,
     getBlogsByUserId,
     getCommentsByBlogId,
+    getuserBlogs
 
  }
