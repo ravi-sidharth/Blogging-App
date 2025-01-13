@@ -6,18 +6,9 @@ const uploadImage = async(req,res)=> {
     try{
         // check if file is missing in req object
         if (!req.file) {
-            console.log(req.file,"request file")
-            return res.status(400).json({
-                success:false,
-                message:'File is required Please upload your file'
+            return res.status(400).render('addBlog',{
+            message:'File is required Please upload your file'
             })
-        }
-        
-        if (!req.user) {
-            return res.status(401).json({
-                success: false,
-                message: 'User not authenticated.',
-            });
         }
 
         // upload to cloudinary
